@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.mapper.QueryVoMapper">
+    <select id="queryAll" resultType="User">
+        SELECT *
+        FROM ${queryVo.tableName}
+        <where>
+            <foreach collection="queryVo.columns" index="index" item="column">
+                <!-- 连接词需要index > 0才开始拼接 -->
+                <if test="index > 0">
+                    <bind name="connector" value="queryVo.connectors[index - 1]"/>
+                    ${connector}
+                </if>
+                <bind name="column" value="queryVo.columns[index]"/>
+                <bind name="compare" value="queryVo.compares[index]"/>
+                <bind name="value" value="queryVo.values[index]"/>
+                ${column} ${compare} '${value}'
+            </foreach>
+        </where>
+    </select>
+
+    <select id="queryByColumn" resultType="User">
+        SELECT *
+        FROM ${queryVo.tableName}
+        <where>
+            <foreach collection="queryVo.columns" index="index" item="column">
+                <!-- 连接词需要index > 0才开始拼接 -->
+                <if test="index > 0">
+                    <bind name="connector" value="queryVo.connectors[index - 1]"/>
+                    ${connector}
+                </if>
+                <bind name="column" value="queryVo.columns[index]"/>
+                <bind name="compare" value="queryVo.compares[index]"/>
+                <bind name="value" value="queryVo.values[index]"/>
+                ${column} ${compare} '${value}'
+            </foreach>
+        </where>
+        <if test="queryVo.pageOffset > 0 and queryVo.recordCount > 0">
+            <bind name="recordOffset" value="queryVo.pageOffset * queryVo.recordCount"/>
+            <bind name="recordCount" value="queryVo.recordCount"/>
+            LIMIT #{recordOffset}, #{recordCount}
+        </if>
+    </select>
+</mapper>

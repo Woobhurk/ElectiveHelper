@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.course.CourseVoDao">
+    <resultMap id="CourseVo" type="CourseVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="keywords" column="keywords"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="dayOfWeek" column="dayOfWeek"/>
+        <result property="classOfDay" column="classOfDay"/>
+        <result property="rateTotal" column="rateTotal"/>
+        <result property="rateCount" column="rateCount"/>
+        <result property="studentCount" column="stu_count"/>
+        <result property="replyCount" column="re_count"/>
+        <association property="teacher" javaType="Teacher">
+            <id property="id" column="te_id"/>
+            <result property="type" column="te_type"/>
+            <result property="account" column="te_account"/>
+            <result property="userId" column="te_userId"/>
+            <result property="name" column="te_name"/>
+            <result property="school" column="te_school"/>
+            <result property="major" column="te_major"/>
+        </association>
+        <association property="classroom" javaType="Classroom">
+            <id property="id" column="cl_id"/>
+            <result property="building" column="cl_building"/>
+            <result property="room" column="cl_room"/>
+        </association>
+    </resultMap>
+
+    <sql id="selectCourseVo">
+        SELECT c.id,
+            te.id te_id,
+            te.type te_type,
+            te.account te_ccount,
+            te.userId te_userId,
+            te.name te_name,
+            te.school te_school,
+            te.major te_major,
+            c.name,
+            c.description,
+            c.keywords,
+            c.startTime,
+            c.endTime,
+            cl.id cl_id,
+            cl.building cl_building,
+            cl.room cl_room,
+            c.dayOfWeek,
+            c.classOfDay,
+            c.rateTotal,
+            c.rateCount,
+            (SELECT COUNT(*) FROM student_course WHERE courseId = c.id) stu_count,
+            (SELECT COUNT(*) FROM reply WHERE courseId = c.id) re_count
+        FROM course c
+             JOIN teacher te ON c.teacherId = te.id
+             JOIN classroom cl ON c.classroomId = cl.id
+    </sql>
+
+    <select id="findAll" resultMap="CourseVo">
+        <include refid="selectCourseVo"/>
+        ORDER BY name
+    </select>
+
+    <select id="findByColumn" resultMap="CourseVo">
+        <if test="courseVo.name != null and courseVo.name != ''">
+            <bind name="courseName" value="'%' + courseVo.name + '%'"/>
+        </if>
+        <if test="courseVo.teacher != null and courseVo.teacher.name != null and courseVo.teacher.name != ''">
+            <bind name="teacherName" value="'%' + courseVo.teacher.name + '%'"/>
+        </if>
+        <include refid="selectCourseVo"/>
+        <where>
+            <if test="courseVo.name != null and courseVo.name != ''">
+                AND c.name LIKE #{courseName}
+            </if>
+            <if test="courseVo.teacher != null and courseVo.teacher.name != null and courseVo.teacher.name != ''">
+                AND te.name LIKE #{teacherName}
+            </if>
+            <if test="courseVo.dayOfWeek != null and courseVo.dayOfWeek > 0">
+                AND c.dayOfWeek = #{courseVo.dayOfWeek}
+            </if>
+            <if test="courseVo.classOfDay != null and courseVo.classOfDay > 0">
+                AND c.classOfDay = #{courseVo.classOfDay}
+            </if>
+        </where>
+        ORDER BY name
+    </select>
+
+    <select id="findByTeacherAndColumn" resultMap="CourseVo">
+        <if test="courseVo.name != null and courseVo.name != ''">
+            <bind name="courseName" value="'%' + courseVo.name + '%'"/>
+        </if>
+        <if test="courseVo.teacher != null and courseVo.teacher.name != null and courseVo.teacher.name != ''">
+            <bind name="teacherName" value="'%' + courseVo.teacher.name + '%'"/>
+        </if>
+        <include refid="selectCourseVo"/>
+        <where>
+            <if test="courseVo.name != null and courseVo.name != ''">
+                AND c.name LIKE #{courseName}
+            </if>
+            <if test="courseVo.teacher != null and courseVo.teacher.name != null and courseVo.teacher.name != ''">
+                AND te.name LIKE #{teacherName}
+            </if>
+            <if test="courseVo.dayOfWeek != null and courseVo.dayOfWeek > 0">
+                AND c.dayOfWeek = #{courseVo.dayOfWeek}
+            </if>
+            <if test="courseVo.classOfDay != null and courseVo.classOfDay > 0">
+                AND c.classOfDay = #{courseVo.classOfDay}
+            </if>
+            AND c.teacherId = #{teacher.id}
+        </where>
+        ORDER BY name
+    </select>
+
+    <select id="findByStudentAndColumn" resultMap="CourseVo">
+        <if test="courseVo.name != null and courseVo.name != ''">
+            <bind name="courseName" value="'%' + courseVo.name + '%'"/>
+        </if>
+        <if test="courseVo.teacher != null and courseVo.teacher.name != null and courseVo.teacher.name != ''">
+            <bind name="teacherName" value="'%' + courseVo.teacher.name + '%'"/>
+        </if>
+        <include refid="selectCourseVo"/>
+            JOIN student_course sc ON c.id = sc.courseId
+        <where>
+            <if test="courseVo.name != null and courseVo.name != ''">
+                AND c.name LIKE #{courseName}
+            </if>
+            <if test="courseVo.teacher != null and courseVo.teacher.name != null and courseVo.teacher.name != ''">
+                AND te.name LIKE #{teacherName}
+            </if>
+            <if test="courseVo.dayOfWeek != null and courseVo.dayOfWeek > 0">
+                AND c.dayOfWeek = #{courseVo.dayOfWeek}
+            </if>
+            <if test="courseVo.classOfDay != null and courseVo.classOfDay > 0">
+                AND c.classOfDay = #{courseVo.classOfDay}
+            </if>
+            AND sc.studentId = #{student.id}
+        </where>
+        ORDER BY name
+    </select>
+</mapper>

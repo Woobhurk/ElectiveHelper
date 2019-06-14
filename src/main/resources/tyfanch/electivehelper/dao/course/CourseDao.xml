@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.course.CourseDao">
+    <select id="findAll" resultType="Course">
+        SELECT *
+        FROM course
+        ORDER BY name
+    </select>
+
+    <select id="findByTeacher" resultType="Course">
+        SELECT *
+        FROM course
+        WHERE teacherId = #{teacher.id}
+        ORDER BY name
+    </select>
+
+    <select id="findByStudent" resultType="Course">
+        SELECT c.*
+        FROM course c
+            JOIN student_course sc ON c.id = sc.courseId
+        WHERE sc.studentId = #{student.id}
+        ORDER BY name
+    </select>
+
+    <select id="findTeacherKeywords" resultType="String">
+        SELECT c.keywords
+        FROM course c
+        WHERE c.teacherId = #{teacher.id}
+    </select>
+
+    <select id="findStudentKeywords" resultType="String">
+        SELECT c.keywords
+        FROM course c
+             JOIN student_course sc ON c.id = sc.courseId
+        WHERE sc.studentId = #{student.id}
+    </select>
+
+    <insert id="save">
+        INSERT INTO course
+        <foreach collection="courseMap" index="column" item="value" open="(" separator="," close=")">
+            ${column}
+        </foreach>
+        VALUES
+        <foreach collection="courseMap" index="column" item="value" open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE course
+        <set>
+            <foreach collection="courseMap" index="column" item="value" separator=",">
+                ${column} = #{value}
+            </foreach>
+        </set>
+        WHERE id = #{courseMap.id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM course WHERE id = #{course.id}
+    </delete>
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.online_course.OnlineCourseDao">
+    <sql id="selectOnlineCourse">
+        SELECT *
+        FROM online_course
+    </sql>
+
+    <sql id="orderRandomly">
+        ORDER BY RAND()
+    </sql>
+
+    <select id="findAll" resultType="OnlineCourse">
+        # SELECT *
+        # FROM online_course
+        # ORDER BY name
+        <include refid="selectOnlineCourse"/>
+        <include refid="orderRandomly"/>
+    </select>
+
+    <select id="findById" resultType="OnlineCourse">
+        # SELECT *
+        # FROM online_course
+        # ORDER BY name
+        <include refid="selectOnlineCourse"/>
+        WHERE courseId = #{onlineCourse.courseId}
+        <include refid="orderRandomly"/>
+    </select>
+
+    <select id="findByName" resultType="OnlineCourse">
+        <bind name="onlineCourse.name" value="'%' + onlineCourse.name + '%'"/>
+        # SELECT *
+        # FROM online_course
+        # ORDER BY name
+        <include refid="selectOnlineCourse"/>
+        WHERE name LIKE #{onlineCourse.name} OR description LIKE #{onlineCourse.name}
+        <include refid="orderRandomly"/>
+        LIMIT #{count}
+    </select>
+
+    <select id="findRandomly" resultType="OnlineCourse">
+        # SELECT *
+        # FROM online_course
+        # ORDER BY RAND()
+        <include refid="selectOnlineCourse"/>
+        <include refid="orderRandomly"/>
+        LIMIT #{count}
+    </select>
+
+    <insert id="save">
+        INSERT INTO online_course
+        <foreach collection="onlineCourseMap" index="column" item="value" open="(" separator=","
+            close=")">
+            ${column}
+        </foreach>
+        VALUES
+        <foreach collection="onlineCourseMap" index="column" item="value" open="(" separator=","
+            close=")">
+            #{value}
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE online_course
+        <set>
+            <foreach collection="onlineCourseMap" index="column" item="value" separator=",">
+                ${column} = #{value}
+            </foreach>
+        </set>
+        WHERE id = #{onlineCourseMap.id}
+    </update>
+</mapper>

@@ -1,0 +1,315 @@
+'use strict';
+
+/**
+ * 初始化
+ * */
+$(function ($) {
+    let mainProcess = new MainProcess();
+
+    mainProcess.main();
+});
+
+/**
+ * 主要过程类
+ * */
+class MainProcess {
+    ancLogin;
+    ancReg;
+    inpLoginUsername;
+    //var inpLoginEmail;
+    inpLoginPassword;
+    inpLoginCaptcha;
+    imgLoginCaptcha;
+    btnLogin;
+    btnShowLoginPassword;
+    inpRegUsername;
+    inpRegEmail;
+    inpRegPassword;
+    inpRegConfPassword;
+    inpRegCaptcha;
+    imgRegCaptcha;
+    btnReg;
+    btnShowRegPassword;
+    btnShowRegConfPassword;
+
+    /**
+     * 主要过程
+     */
+    main() {
+        this.initWidget();
+        this.bindWidgetEvent();
+        this.start();
+    }
+
+    /**
+     * 实例化所有控件
+     */
+    initWidget() {
+        // 获取各个组件
+        this.ancLogin = $("#ancLogin");
+        this.ancReg = $("#ancReg");
+        this.inpLoginUsername = $("#inpLoginUsername");
+        //inpLoginEmail = $("#inpLoginEmail");
+        this.inpLoginPassword = $("#inpLoginPassword");
+        this.inpLoginCaptcha = $("#inpLoginCaptcha");
+        this.imgLoginCaptcha = $("#imgLoginCaptcha");
+        this.btnLogin = $("#btnLogin");
+        this.btnShowLoginPassword = $("#btnShowLoginPassword");
+
+        this.inpRegUsername = $("#inpRegUsername");
+        this.inpRegEmail = $("#inpRegEmail");
+        this.inpRegPassword = $("#inpRegPassword");
+        this.inpRegConfPassword = $("#inpRegConfPassword");
+        this.inpRegCaptcha = $("#inpRegCaptcha");
+        this.imgRegCaptcha = $("#imgRegCaptcha");
+        this.btnReg = $("#btnReg");
+        this.btnShowRegPassword = $("#btnShowRegPassword");
+        this.btnShowRegConfPassword = $("#btnShowRegConfPassword");
+    }
+
+    /**
+     * 为控件绑定事件处理方法
+     */
+    bindWidgetEvent() {
+        // 导航栏切换
+        this.ancLogin.click(() => {
+            // 如果当前导航栏不是活动状态则重新生成验证码
+            if (!this.ancLogin.hasClass("active")) {
+                this.updateCaptcha(this.imgLoginCaptcha);
+            }
+        });
+        // 导航栏切换
+        this.ancReg.click(() => {
+            // 如果当前导航栏不是活动状态则重新生成验证码
+            if (!this.ancReg.hasClass("active")) {
+                this.updateCaptcha(this.imgRegCaptcha);
+            }
+        });
+        // 重新生成登录验证码
+        this.imgLoginCaptcha.click(() => {
+            this.updateCaptcha(this.imgLoginCaptcha);
+        });
+        // 重新生成注册验证码
+        this.imgRegCaptcha.click(() => {
+            this.updateCaptcha(this.imgRegCaptcha);
+        });
+        // 登录按钮
+        this.btnLogin.click(() => {
+            this.loginEvent();
+        });
+        // 注册按钮
+        this.btnReg.click(() => {
+            this.registerEvent();
+        });
+        // 显示登录密码
+        this.btnShowLoginPassword.mousedown(() => {
+            this.inpLoginPassword.attr("type", "text");
+        });
+        // 隐藏登录密码
+        this.btnShowLoginPassword.mouseup(() => {
+            this.inpLoginPassword.attr("type", "password");
+        });
+        // 显示注册密码
+        this.btnShowRegPassword.mousedown(() => {
+            this.inpRegPassword.attr("type", "text");
+            this.inpRegConfPassword.attr("type", "text");
+        });
+        // 隐藏注册密码
+        this.btnShowRegPassword.mouseup(() => {
+            this.inpRegPassword.attr("type", "password");
+            this.inpRegConfPassword.attr("type", "password");
+        });
+        // 显示注册确认密码
+        this.btnShowRegConfPassword.mousedown(() => {
+            this.btnShowRegPassword.mousedown();
+        });
+        // 隐藏注册确认密码
+        this.btnShowRegConfPassword.mouseup(() => {
+            this.btnShowRegPassword.mouseup();
+        });
+    }
+
+    /**
+     * 页面加载后执行
+     */
+    start() {
+        this.updateCaptcha(this.imgLoginCaptcha);
+    }
+
+    /**
+     * 登录事件
+     */
+    loginEvent() {
+        let userVo = new UserVo();
+
+        userVo.username = this.inpLoginUsername.val();
+        //userVo.email = inpLoginEmail.val();
+        userVo.password = this.inpLoginPassword.val();
+        userVo.captcha = this.inpLoginCaptcha.val();
+        this.postUserVo("login", userVo, (resultInfo) => {
+            let resultInfoProceed = new ResultInfoProceed();
+
+            resultInfoProceed.updateResultInfo(resultInfo);
+            // 重新生成验证码
+            this.updateCaptcha(this.imgLoginCaptcha);
+        });
+    }
+
+    /**
+     * 注册事件
+     */
+    registerEvent() {
+        let userVo = new UserVo();
+
+        userVo.username = this.inpRegUsername.val();
+        userVo.email = this.inpRegEmail.val();
+        userVo.password = this.inpRegPassword.val();
+        userVo.confPassword = this.inpRegConfPassword.val();
+        userVo.captcha = this.inpRegCaptcha.val();
+        this.postUserVo("reg", userVo, (resultInfo) => {
+            let resultInfoProceed = new ResultInfoProceed();
+
+            resultInfoProceed.updateResultInfo(resultInfo);
+            // 重新生成验证码
+            this.updateCaptcha(this.imgRegCaptcha);
+        });
+    }
+
+    /**
+     * 发送用户数据请求
+     *
+     * @param action 发送的操作
+     * @param userVo 用户数据
+     * @param onResult 信息发送完后的回调方法
+     */
+    postUserVo(action, userVo, onResult) {
+        let userProceed = new UserProceed();
+
+        userProceed.postUserVo(action, userVo, (resultInfo) => {
+            onResult(resultInfo);
+        });
+    }
+
+    /**
+     * 更新验证码
+     *
+     * @param target 更新的组件
+     */
+    updateCaptcha(target) {
+        let userProceed = new UserProceed();
+
+        userProceed.captchaGet(target);
+    }
+}
+
+/**
+ * 用户操作类
+ * */
+class UserProceed {
+    /**
+     * 发送用户数据
+     *
+     * @param action 发送的操作
+     * @param userVo 用户数据
+     * @param onResult 请求发送后返回响应数据的回调方法
+     * */
+    postUserVo(action, userVo, onResult) {
+        let userVoJson = JSON.stringify(userVo);
+
+        $.post(WEB_ROOT + "/User", {
+            action: action,
+            userVo: userVoJson
+        }, (data) => {
+            this.postUserVoEvent(data, onResult);
+        });
+    }
+
+    /**
+     * 发送用户数据事件
+     *
+     * @param data
+     * @param onResult 请求发送后返回响应数据的回调方法
+     */
+    postUserVoEvent(data, onResult) {
+        let resultInfoJson = data;
+        let resultInfo = new ResultInfoProceed().toResultInfo(resultInfoJson);
+
+        console.log("---- postUserVoEvent: " + resultInfoJson);
+        onResult(resultInfo);
+    }
+
+    /**
+     * 获取图形验证码
+     *
+     * @param target 获取到的组件
+     */
+    captchaGet(target) {
+        target.attr("src", WEB_ROOT + "/Captcha?action=get&" + Math.random());
+    }
+}
+
+/**
+ * 相应处理
+ *
+ * @constructor
+ */
+class ResultInfoProceed {
+    /**
+     * 处理响应数据
+     *
+     * @param resultInfoJson 响应数据的json
+     * */
+    toResultInfo(resultInfoJson) {
+        return JSON.parse(resultInfoJson);
+    }
+
+    /**
+     * 显示操作结果给用户
+     *
+     * @param resultInfo 响应数据
+     * */
+    updateResultInfo(resultInfo) {
+        let labResultInfo = $("#labResultInfo");
+
+        labResultInfo.css("color", this.getResultInfoColor(resultInfo));
+        labResultInfo.text(resultInfo.resultMsg);
+        labResultInfo.fadeIn();
+        // 5秒后提示消失
+        window.setTimeout(function () {
+            labResultInfo.fadeOut();
+        }, 3000);
+    }
+
+    /**
+     * 根据响应数据获取结果显示的颜色
+     *
+     * @param resultInfo 响应数据
+     * @return {string} 返回的颜色字符串值
+     */
+    getResultInfoColor(resultInfo) {
+        return resultInfo.success ? "#007bff" : "#dc3545";
+    }
+}
+
+/**
+ * 其他工具类
+ * */
+class Utils {
+    /**
+     * 将对象转化成json字符串
+     *
+     * @param obj 要转化的对象
+     * @return {string} 转化成的json字符串
+     * */
+    toUrlFormat(obj) {
+        let objJson = "";
+
+        for (let key in obj) {
+            objJson += key + "=" + obj[key] + "&";
+        }
+
+        objJson = objJson.substr(0, objJson.length - 1);
+
+        return objJson;
+    }
+}

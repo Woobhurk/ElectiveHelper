@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.msg.MsgVoDao">
+    <resultMap id="MsgVo" type="MsgVo">
+        <id property="id" column="id"/>
+        <result property="msgTime" column="msgTime"/>
+        <result property="msgText" column="msgText"/>
+        <association property="sender" javaType="User">
+            <id property="id" column="s_id"/>
+            <result property="username" column="s_username"/>
+        </association>
+        <association property="receiver" javaType="User">
+            <id property="id" column="r_id"/>
+            <result property="username" column="r_username"/>
+        </association>
+    </resultMap>
+
+    <sql id="selectMsgVo">
+        SELECT msg.id,
+               s.id s_id,
+               s.username s_username,
+               r.id r_id,
+               r.username r_username,
+               msg.msgTime,
+               msg.msgText
+        FROM msg
+        JOIN user s ON msg.senderId = s.id
+        JOIN user r ON msg.receiverId = r.id
+    </sql>
+
+    <select id="findBySender" resultMap="MsgVo">
+        <include refid="selectMsgVo"/>
+        WHERE senderId = #{msg.senderId}
+        ORDER BY msg.msgTime
+    </select>
+
+    <select id="findByReceiver" resultMap="MsgVo">
+        <include refid="selectMsgVo"/>
+        WHERE receiverId = #{msg.receiverId}
+        ORDER BY msg.msgTime
+    </select>
+
+    <select id="findBySingle" resultMap="MsgVo">
+        <include refid="selectMsgVo"/>
+        WHERE senderId = #{msg.senderId}
+        OR receiverId = #{msg.senderId}
+        ORDER BY msg.msgTime
+    </select>
+
+    <select id="findByPaired" resultMap="MsgVo">
+        <include refid="selectMsgVo"/>
+        WHERE (senderId = #{msg.senderId} AND receiverId = #{msg.receiverId})
+            OR (senderId = #{msg.receiverId} AND receiverId = #{msg.senderId})
+        ORDER BY msg.msgTime
+    </select>
+</mapper>

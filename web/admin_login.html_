@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <title>AdminLogin</title>
+</head>
+<body>
+<div class="d-flex container flex-column col-md-4 offset-4">
+    <!-- Navigation Bar -->
+    <ul class="nav nav-tabs mt-3 mb-3" role="tablist">
+        <li class="nav-item">
+            <a id="ancLogin" class="nav-link active" data-toggle="tab" href="#divLogin" role="tab">登录</a>
+        </li>
+        <li class="nav-item">
+            <a id="ancReg" class="nav-link" data-toggle="tab" href="#divRegister" role="tab">注册</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Login -->
+        <div id="divLogin" class="tab-pane fade show active" role="tabpanel">
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpLoginUsername">Account</label>
+                </div>
+                <input id="inpLoginUsername" class="form-control" type="text" placeholder="Username / Email">
+            </div>
+            <!--<div class="input-group mb-2 no-gutters">-->
+                <!--<div class="col-md-4 input-group-prepend">-->
+                    <!--<label class="flex-grow-1 input-group-text justify-content-center" for="inpLoginEmail">Email</label>-->
+                <!--</div>-->
+                <!--<input id="inpLoginEmail" class="form-control" type="text" placeholder="abc@xxx.com">-->
+            <!--</div>-->
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpLoginPassword">Password</label>
+                </div>
+                <input id="inpLoginPassword" class="form-control" type="password">
+                <div class="col-md-1 input-group-append">
+                    <button id="btnShowLoginPassword" class="flex-grow-1 btn input-group-text">O</button>
+                </div>
+            </div>
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpLoginCaptcha">CAPTCHA</label>
+                </div>
+                <input id="inpLoginCaptcha" class="form-control" type="text" placeholder="Case insensitive">
+                <div class="col-md-3 input-group-append">
+                    <!--<label id="labLoginCaptcha" class="flex-grow-1 input-group-text justify-content-center" for="inpLoginCaptcha"></label>-->
+                    <img id="imgLoginCaptcha" class="rounded-right" style="width: 100%; height: 100%;" src="" alt="CAPTCHA">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <button id="btnLogin" class="offset-4 col-md-4 btn btn-primary">Login</button>
+            </div>
+        </div>
+        <!-- Register -->
+        <div id="divRegister" class="tab-pane fade" role="tabpanel">
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpRegUsername">Username</label>
+                </div>
+                <input id="inpRegUsername" class="form-control" type="text" placeholder="At least 6 chars">
+            </div>
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpRegEmail">Email</label>
+                </div>
+                <input id="inpRegEmail" class="form-control" type="text" placeholder="abc@xxx.com">
+            </div>
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpRegPassword">Password</label>
+                </div>
+                <input id="inpRegPassword" class="form-control" type="password" placeholder="At least 8 chars">
+                <div class="col-md-1 input-group-append">
+                    <button id="btnShowRegPassword" class="flex-grow-1 btn input-group-text">O</button>
+                </div>
+            </div>
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpRegConfPassword">Confirm Password</label>
+                </div>
+                <input id="inpRegConfPassword" class="form-control" type="password">
+                <div class="col-md-1 input-group-append">
+                    <button id="btnShowRegConfPassword" class="flex-grow-1 btn input-group-text">O</button>
+                </div>
+            </div>
+            <div class="input-group mb-2 no-gutters">
+                <div class="col-md-4 input-group-prepend">
+                    <label class="flex-grow-1 input-group-text justify-content-center" for="inpRegCaptcha">CAPTCHA</label>
+                </div>
+                <input id="inpRegCaptcha" class="form-control" type="text" placeholder="Case insensitive">
+                <div class="col-md-3 input-group-append">
+                    <!--<label id="labRegCaptcha" class="flex-grow-1 input-group-text justify-content-center" for="inpRegCaptcha"></label>-->
+                    <img id="imgRegCaptcha" class="rounded-right" style="width: 100%; height: 100%;" src="" alt="CAPTCHA">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <button id="btnReg" class="offset-4 col-md-4 btn btn-primary">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Response Result -->
+    <label id="labResultInfo" class="col-md-12 alert alert-info text-center" style="font-size: 18pt; display: none;">alert</label>
+</div>
+
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/common/popper.min.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/admin_login.js"></script>
+</body>
+</html>

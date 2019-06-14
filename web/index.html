@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <title>AdminLogin</title>
+</head>
+<body>
+<div class="d-flex container flex-column col-md-4 offset-4 no-gutters">
+    <h1 class="navbar-brand text-center text-primary mt-3">AdminLogin</h1>
+    <!-- Navigation Bar -->
+    <div v-if="false" id="navPanel"
+        class="nav nav-pills d-flex flex-row justify-content-center col-12 mb-2"
+        role="tablist">
+        <a @click="changeToLogin()" :class="{'active': method === METHOD_LOGIN}"
+            class="nav-link text-center flex-grow-1 shadow-sm"
+            data-toggle="tab" href="" role="tab">登录</a>
+        <a @click="changeToReg()" :class="{'active': method === METHOD_REG}"
+            class="nav-link text-center flex-grow-1 shadow-sm"
+            data-toggle="tab" href="" role="tab">注册</a>
+    </div>
+
+    <div id="userPanel" class="d-flex flex-column col-12 no-gutters">
+        <!-- Login -->
+        <div v-if="method === METHOD_LOGIN" class="col-12 no-gutters">
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">Account</label>
+                <input v-model="userVo.username" class="form-control w-100 rounded shadow-sm"
+                    type="text" placeholder="Username / Email">
+            </div>
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">Password</label>
+                <div class="d-flex flex-row col-12 no-gutters">
+                    <input v-model="userVo.password" :type="showPassword ? 'text' : 'password'"
+                        class="form-control flex-fill rounded shadow-sm">
+                    <button @click="toggleShowPassword()"
+                        class="btn input-group-text ml-1 rounded shadow-sm">O
+                    </button>
+                </div>
+            </div>
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">CAPTCHA</label>
+                <div class="d-flex flex-row col-12 no-gutters">
+                    <input v-model="userVo.captcha" class="form-control flex-fill rounded shadow-sm"
+                        type="text" placeholder="Case insensitive">
+                    <img @click="refreshCaptcha()" :src="captchaUrl"
+                        class="col-4 ml-1 rounded shadow-sm" alt="CAPTCHA">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <button @click="login()"
+                    class="offset-4 col-md-4 btn btn-primary rounded shadow-sm">Login
+                </button>
+            </div>
+        </div>
+        <!-- Register -->
+        <div v-if="method === METHOD_REG" class="col-12 no-gutters" role="tabpanel">
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">Username</label>
+                <input v-model="userVo.username" class="form-control w-100 rounded shadow-sm"
+                    type="text" placeholder="At least 6 chars">
+            </div>
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">Email</label>
+                <input v-model="userVo.email" class="form-control w-100 rounded shadow-sm"
+                    type="text" placeholder="abc@xxx.com">
+            </div>
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">Password</label>
+                <div class="d-flex flex-row col-12 no-gutters">
+                    <input v-model="userVo.password" :type="showPassword ? 'text' : 'password'"
+                        class="form-control flex-fill rounded shadow-sm">
+                    <button @click="toggleShowPassword()"
+                        class="btn input-group-text ml-1 rounded shadow-sm">O
+                    </button>
+                </div>
+            </div>
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">Confirm Password</label>
+                <div class="d-flex flex-row col-12 no-gutters">
+                    <input v-model="userVo.confPassword" :type="showPassword ? 'text' : 'password'"
+                        class="form-control flex-fill rounded shadow-sm">
+                    <button @click="toggleShowPassword()"
+                        class="btn input-group-text ml-1 rounded shadow-sm">O
+                    </button>
+                </div>
+            </div>
+            <div class="input-group d-flex flex-column col-12 mb-2 no-gutters">
+                <label class="text-dark col-12 mb-0">CAPTCHA</label>
+                <div class="d-flex flex-row col-12 no-gutters">
+                    <input v-model="userVo.captcha" class="form-control flex-fill rounded shadow-sm"
+                        type="text" placeholder="Case insensitive">
+                    <img @click="refreshCaptcha()" :src="captchaUrl"
+                        class="col-4 ml-1 rounded shadow-sm" alt="CAPTCHA">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <button @click="reg()" class="offset-4 col-md-4 btn btn-primary rounded shadow-sm">
+                    Register
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- resultInfoPanel -->
+    <label id="resultInfoPanel" v-if="show"
+        :class="{'alert-info': resultInfo.success, 'alert-danger': !resultInfo.success}"
+        class="col-md-12 alert text-center rounded shadow-sm">{{ resultInfo.resultMsg }}</label>
+</div>
+
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/common/popper.min.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+<script src="js/vue/vue.min.js"></script>
+<script src="js/md5/md5.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/data_proceed.js"></script>
+<script src="js/admin_login.js"></script>
+</body>
+</html>

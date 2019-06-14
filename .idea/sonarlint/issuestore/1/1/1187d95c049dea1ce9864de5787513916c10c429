@@ -1,0 +1,12 @@
+
+hjavascript:S2589À0"LRefactor this code so that this expression does not always evaluate to true.(ÈªJ
+javascript:S2692Š"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(åÿË÷
+„javascript:S2692‹"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(¢«øéûÿÿÿÿ
+„javascript:S2692Œ"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(ÀÍÿğıÿÿÿÿ
+hjavascript:S2814ƒ"FRename "has" as this name is already used in declaration at line 2050.(óüÑüıÿÿÿÿ
+[javascript:S1854"9Remove this useless assignment to local variable "def$$1"(Çø“ÿÿÿÿÿ
+Qjavascript:S1854ì."4Remove this useless assignment to local variable "i"(¸ÛÕÓ
+Vjavascript:S1854Ë/"4Remove this useless assignment to local variable "i"(¸°½¼úÿÿÿÿ
+Vjavascript:S1854Ñ1"4Remove this useless assignment to local variable "i"(Ñï–îûÿÿÿÿ
+Ijavascript:Parentheses®"!Remove those useless parentheses.(…±Åÿÿÿÿÿ
+Djavascript:ParenthesesĞ"!Remove those useless parentheses.(ùşàƒ

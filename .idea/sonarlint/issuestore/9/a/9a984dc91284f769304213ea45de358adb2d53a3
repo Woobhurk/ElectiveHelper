@@ -1,0 +1,18 @@
+
+njavascript:S2589ç"LRefactor this code so that this expression does not always evaluate to true.(›¦ŸÏûÿÿÿÿ
+hjavascript:S2589ß0"LRefactor this code so that this expression does not always evaluate to true.(ÈªJ
+javascript:S2692‘"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(åÿË÷
+„javascript:S2692’"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(¢«øéûÿÿÿÿ
+„javascript:S2692“"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(ÀÍÿğıÿÿÿÿ
+javascript:S2692ß\"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(ğ‚²†
+hjavascript:S2814§"FRename "has" as this name is already used in declaration at line 2086.(óüÑüıÿÿÿÿ
+javascript:S1871¼9"dEither merge this branch with the identical one on line "7344" or change one of the implementations.(ÎŞ–œ
+ljavascript:S3523±Z"OReview this "Function" call and make sure its arguments are properly validated.(íÉ•¯
+kjavascript:S3523ºZ"OReview this "Function" call and make sure its arguments are properly validated.(òÏ‡@
+ljavascript:S3523Š["OReview this "Function" call and make sure its arguments are properly validated.(ŒÂÚ±
+[javascript:S1854"9Remove this useless assignment to local variable "def$$1"(Çø“ÿÿÿÿÿ
+Qjavascript:S1854‹/"4Remove this useless assignment to local variable "i"(¸ÛÕÓ
+Vjavascript:S1854ê/"4Remove this useless assignment to local variable "i"(¸°½¼úÿÿÿÿ
+Vjavascript:S1854ğ1"4Remove this useless assignment to local variable "i"(Ñï–îûÿÿÿÿ
+Ijavascript:Parentheses¶"!Remove those useless parentheses.(…±Åÿÿÿÿÿ
+Djavascript:ParenthesesÙ"!Remove those useless parentheses.(ùşàƒ

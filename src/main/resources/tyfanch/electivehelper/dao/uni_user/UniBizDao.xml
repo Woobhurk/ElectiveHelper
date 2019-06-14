@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.uni_user.UniBizDao">
+    <select id="findByStudentAndCourse" resultType="StudentCourse">
+        SELECT *
+        FROM student_course
+        WHERE studentId = #{studentCourse.studentId}
+            AND courseId = #{studentCourse.courseId}
+    </select>
+
+    <select id="findStudentsOfCourse" resultType="UniUser">
+        SELECT * FROM student
+        JOIN student_course sc ON student.id = sc.studentId
+        WHERE sc.courseId = #{studentCourse.courseId}
+    </select>
+
+    <insert id="selectCourse">
+        INSERT INTO student_course
+        <foreach collection="studentCourseMap" index="column" item="value" open="(" separator="," close=")">
+            ${column}
+        </foreach>
+        VALUES
+        <foreach collection="studentCourseMap" index="column" item="value" open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </insert>
+
+    <delete id="deselectCourse">
+        DELETE FROM student_course
+        WHERE studentId = #{studentCourse.studentId}
+            AND courseId = #{studentCourse.courseId}
+    </delete>
+
+    <select id="isCourseConflict" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM course c
+        JOIN (SELECT * FROM course WHERE id = #{studentCourse.courseId}) nc
+        JOIN student_course sc
+            ON c.id &lt;&gt; nc.id
+                AND c.dayOfWeek = nc.dayOfWeek
+                AND c.classOfDay = nc.classOfDay
+                AND c.id = sc.courseId
+        WHERE sc.studentId = #{studentCourse.studentId};
+    </select>
+</mapper>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" class="w-100 h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <title>AdminManagement</title>
+</head>
+<body class="d-flex flex-row container-fluid w-100 h-100 p-0 m-0 no-gutters">
+<!-- navPanel -->
+<div id="navPanel" class="nav nav-pills d-flex flex-column col-2 p-2 bg-white" role="tablist">
+    <h1 class="navbar-brand text-center text-primary m-3">AdminManagement</h1>
+    <a v-for="(tabName, index) in tabNames" @click="refreshPanels(index)"
+        :class="{'active': (tabName === tabNames[0])}" class="nav-link text-center shadow-sm"
+        data-toggle="pill" role="tab" href="">{{ tabName }}</a>
+</div>
+
+<div class="d-flex flex-column col-10 h-100 bg-light no-gutters">
+    <!-- conditionPanel && infoPanel -->
+    <div class="d-flex flex-row flex-shrink-1 col-12 no-gutters overflow-auto"
+        style="flex-basis: 24%;">
+        <!-- conditionPanel -->
+        <div id="conditionPanel" class="d-flex flex-column col-9 p-1 no-gutters">
+            <div class="d-flex flex-column flex-shrink-1 col-12 mb-1 no-gutters overflow-auto">
+                <div v-for="(column, index) in queryVo.columns"
+                    class="input-group-sm d-flex flex-row mb-1 no-gutters">
+                    <select :disabled="index == 0" v-model="queryVo.connectors[index - 1]"
+                        name="selConnectors" class="custom-select col-1 shadow-sm">
+                        <option v-for="connectorName in queryVoConst.CONNECTOR_NAMES"
+                            :value="connectorName[0]">{{ connectorName[1] }}
+                        </option>
+                    </select>
+                    <select v-model="queryVo.columns[index]" name="selColumns"
+                        class="custom-select col-2 shadow-sm">
+                        <option v-for="columnName in queryVoConst.COLUMN_NAMES"
+                            :value="columnName[0]">{{ columnName[1] }}
+                        </option>
+                    </select>
+                    <select v-model="queryVo.compares[index]" name="selCompares"
+                        class="custom-select col-2 shadow-sm">
+                        <option v-for="compareName in queryVoConst.COMPARE_NAMES"
+                            :value="compareName[0]">{{ compareName[1] }}
+                        </option>
+                    </select>
+                    <input v-model="queryVo.values[index]" name="inpValues"
+                        class="form-control col-6 shadow-sm" type="text" placeholder="Value">
+                    <button @click="removeCondition(index)" name="btnRemoveCondition"
+                        class="btn btn-sm btn-danger col-1 shadow-sm">X
+                    </button>
+                </div>
+            </div>
+            <!-- addCondition && queryTable -->
+            <div class="d-flex flex-row flex-shrink-1 col-12 align-self-end"
+                style="flex-basis: 15%;">
+                <button @click="addCondition()" class="btn btn-primary btn-sm col-2 mr-2 shadow-sm">
+                    增加条件
+                </button>
+                <button @click="query()" class="btn btn-primary btn-sm col-2 mr-2 shadow-sm">查找
+                </button>
+                <button @click="query()" class="btn btn-primary btn-sm col-2 mr-2 shadow-sm">刷新
+                </button>
+            </div>
+        </div>
+
+        <!-- infoPanel -->
+        <div id="infoPanel" class="d-flex flex-column col-3 p-1 no-gutters bg-white overflow-auto">
+            <div v-for="columnName in resultInfoConst.COLUMN_NAMES"
+                class="input-group-sm d-flex flex-column flex-shrink-1 col-12 mb-1 no-gutters shadow-sm">
+                <label class="text-dark col-12 mb-0" style="flex-basis: 0;">{{ columnName[1]
+                    }}</label>
+                <textarea disabled
+                    :class="{'text-info': resultInfo.success, 'text-danger': !resultInfo.success}"
+                    class="form-control text-info flex-fill col-12" rows="1">{{ resultInfo[columnName[0]] }}</textarea>
+                <!--<textarea v-else disabled class="form-control text-danger flex-fill col-12" rows="1">{{ resultInfo[columnName[0]] }}</textarea>-->
+            </div>
+        </div>
+    </div>
+
+    <!-- dataListPanel -->
+    <div id="dataListPanel" class="d-flex flex-row col-12 h-100 no-gutters shadow-sm"
+        style="flex-basis: 70%;">
+        <div class="d-flex flex-row col-9 p-1 h-100 no-gutters bg-white overflow-auto">
+            <table class="table table-sm table-hover">
+                <thead class="thead-light">
+                <tr>
+                    <th scope="col" style="width: 1rem;">
+                        <button @click="insertData()" :disabled="!updateMode"
+                            class="btn btn-sm btn-primary col-12 shadow-sm">+
+                        </button>
+                    </th>
+                    <th scope="col">#</th>
+                    <th v-for="columnName in queryVoConst.COLUMN_NAMES" scope="col">{{ columnName[1]
+                        }}
+                    </th>
+                </tr>
+                </thead>
+                <tbody v-for="(data, index) in dataList" @click="selectData(index)">
+                <tr>
+                    <td>
+                        <button @click="deleteData(index)" name="btnUserDel"
+                            class="btn btn-sm btn-danger shadow-sm">X
+                        </button>
+                    </td>
+                    <th scope="row">{{ index + 1 }}</th>
+                    <td v-for="columnName in queryVoConst.COLUMN_NAMES">{{ data[columnName[0]] }}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- edit -->
+        <div class="d-flex flex-column col-3 p-1 h-100 no-gutters bg-light">
+            <div class="d-flex flex-column flex-fill col-12 overflow-auto no-gutters">
+                <div v-if="dataList.length > 0"
+                    v-for="(columnName, key, index) in updateVoConst.COLUMN_NAMES"
+                    class="input-group-sm d-flex flex-column flex-shrink-1 mb-1 no-gutters shadow-sm">
+                    <label class="text-dark flex-fill col-12 mb-0">{{ columnName[1] }}</label>
+                    <textarea :disabled="index === 0" v-model="selectedData[columnName[0]]"
+                        class="form-control flex-fill col-12" rows="1"></textarea>
+                </div>
+            </div>
+            <div class="d-flex flex-column flex-shrink-1 col-12 align-self-end"
+                style="flex-basis: 0;">
+                <button v-if="updateMode" @click="updateData()"
+                    class="btn btn-sm btn-primary shadow-sm">修改
+                </button>
+                <button v-else @click="insertData()" class="btn btn-sm btn-primary shadow-sm">插入
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- pagePanel -->
+    <div id="pagePanel" class="d-flex flex-shrink-1 col-12 no-gutters" style="flex-basis: 6%;">
+        <div class="d-flex flex-row flex-shrink-1 align-items-center col-9 p-1 no-gutters bg-light">
+            <button @click="prevPage()" class="btn btn-sm btn-secondary shadow-sm"
+                style="width: 4%;">&lt;
+            </button>
+            <!--<label class="text-dark ml-2 mr-2 mb-0">{{ pageOffset + 1 }}</label>-->
+            <input v-model="pageOffset" @change="changePageOffset()"
+                class="form-control form-control-sm text-center ml-1" type="text"
+                style="width: 4%;">
+            <label class="text-dark mr-1 mb-0">/{{ pageCount }}</label>
+            <button @click="nextPage()" class="btn btn-sm btn-secondary mr-2 shadow-sm"
+                style="width: 4%;">&gt;
+            </button>
+            <label class="text-dark text-right mb-0">共{{ dataAllCount }}条，每页显示</label>
+            <select v-model="dataCount" @change="changeDataCount()"
+                class="custom-select custom-select-sm ml-1 mr-1 shadow-sm" style="width: 8%;">
+                <option v-for="count in dataCountList" :value="count">
+                    {{ count > 0 ? count + "条" : "全部" }}
+                </option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery/jquery.min.js"></script>
+<script src="js/common/popper.min.js"></script>
+<script src="js/bootstrap/bootstrap.min.js"></script>
+<script src="js/vue/vue.min.js"></script>
+<script src="js/md5/md5.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/data_proceed.js"></script>
+<script src="js/admin_management.js"></script>
+</body>
+</html>

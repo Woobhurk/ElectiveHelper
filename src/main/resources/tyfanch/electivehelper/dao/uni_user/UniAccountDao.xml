@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.uni_user.UniAccountDao">
+    <select id="find" resultType="UniUser">
+        SELECT *
+        FROM ${tableName}
+        WHERE account = #{uniUser.account}
+          AND password = #{uniUser.password}
+    </select>
+
+    <select id="findUserByUniUserId" resultType="User">
+        SELECT id, type, username
+        FROM user
+        WHERE id = #{uniUser.userId}
+    </select>
+
+    <select id="findUniUserByUserId" resultType="UniUser">
+        SELECT un.id, un.account, un.name, un.school, un.major
+        FROM user u
+        JOIN ${tableName} un ON u.id = un.userId
+        WHERE u.id = #{user.id}
+    </select>
+
+    <insert id="save">
+        INSERT INTO ${tableName}
+        <foreach collection="uniUserMap" index="column" item="value" open="(" separator=","
+            close=")">
+            ${column}
+        </foreach>
+        VALUES
+        <foreach collection="uniUserMap" index="column" item="value" open="(" separator=","
+            close=")">
+            #{value}
+        </foreach>
+    </insert>
+
+    <update id="update">
+        UPDATE ${tableName}
+        <set>
+            <foreach collection="uniUserMap" index="column" item="value" open="" separator="," close="">
+                ${column} = #{value}
+            </foreach>
+        </set>
+        WHERE id = #{uniUserMap.id}
+    </update>
+
+    <update id="clearUserId">
+        UPDATE ${tableName} SET userId = null WHERE userId = #{userId}
+    </update>
+</mapper>

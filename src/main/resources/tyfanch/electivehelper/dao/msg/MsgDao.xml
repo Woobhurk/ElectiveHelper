@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+       Copyright 2009-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tyfanch.electivehelper.dao.msg.MsgDao">
+    <select id="findBySender" resultType="Msg">
+        SELECT *
+        FROM msg
+        WHERE senderId = #{msg.senderId}
+        ORDER BY msg.msgTime
+    </select>
+
+    <select id="findByReceiver" resultType="Msg">
+        SELECT *
+        FROM msg
+        WHERE receiverId = #{msg.receiverId}
+        ORDER BY msg.msgTime
+    </select>
+
+    <select id="findBySingle" resultType="Msg">
+        SELECT *
+        FROM msg
+        WHERE senderId = #{msg.senderId}
+           OR receiverId = #{msg.senderId}
+        ORDER BY msg.msgTime
+    </select>
+
+    <select id="findByPaired" resultType="Msg">
+        SELECT *
+        FROM msg
+        WHERE (senderId = #{msg.senderId} AND receiverId = #{msg.receiverId})
+            OR (senderId = #{msg.receiverId} AND receiverId = #{msg.senderId})
+        ORDER BY msg.msgTime
+    </select>
+
+    <insert id="save">
+        INSERT INTO msg
+        <foreach collection="msgMap" index="column" item="value" open="(" separator="," close=")">
+            ${column}
+        </foreach>
+        VALUES
+        <foreach collection="msgMap" index="column" item="value" open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </insert>
+
+    <delete id="deleteByIds">
+        DELETE FROM msg
+        WHERE id IN
+        <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

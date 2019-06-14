@@ -1,0 +1,22 @@
+
+hjavascript:S2589Ï0"LRefactor this code so that this expression does not always evaluate to true.(ÈªJ
+javascript:S2692—"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(åÿË÷
+„javascript:S2692˜"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(¢«øéûÿÿÿÿ
+„javascript:S2692™"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(ÀÍÿğıÿÿÿÿ
+javascript:S2692Á\"bThis check ignores index 0; consider using 'includes' method to make this check safe and explicit.(ğ‚²†
+hjavascript:S2814§"FRename "has" as this name is already used in declaration at line 2086.(óüÑüıÿÿÿÿ
+javascript:S1871ª9"dEither merge this branch with the identical one on line "7326" or change one of the implementations.(ÎŞ–œ
+=javascript:S878	""Remove use of this comma operator.(ì©ï
+ljavascript:S3523“Z"OReview this "Function" call and make sure its arguments are properly validated.(íÉ•¯
+kjavascript:S3523œZ"OReview this "Function" call and make sure its arguments are properly validated.(òÏ‡@
+ljavascript:S3523ìZ"OReview this "Function" call and make sure its arguments are properly validated.(ŒÂÚ±
+ejavascript:UnusedVariable™":Remove the declaration of the unused 'isAndroid' variable.(ÀÍÿğıÿÿÿÿ
+_javascript:UnusedVariable›"9Remove the declaration of the unused 'isChrome' variable.(šÛØ‹
+gjavascript:UnusedVariableœ"<Remove the declaration of the unused 'isPhantomJS' variable.(›ö’Ãùÿÿÿÿ
+cjavascript:UnusedVariable·\"8Remove the declaration of the unused 'compile' variable.(Ø¿æ‡ûÿÿÿÿ
+[javascript:S1854"9Remove this useless assignment to local variable "def$$1"(Çø“ÿÿÿÿÿ
+Qjavascript:S1854û."4Remove this useless assignment to local variable "i"(¸ÛÕÓ
+Vjavascript:S1854Ú/"4Remove this useless assignment to local variable "i"(¸°½¼úÿÿÿÿ
+Vjavascript:S1854à1"4Remove this useless assignment to local variable "i"(Ñï–îûÿÿÿÿ
+Ijavascript:Parentheses»"!Remove those useless parentheses.(…±Åÿÿÿÿÿ
+Djavascript:Parenthesesİ"!Remove those useless parentheses.(ùşàƒ
